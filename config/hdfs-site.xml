@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<configuration>
+  <!-- where NameNode stores namespace and transaction logs -->
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:///root/hadoop/dfs/name</value>
+  </property>
+
+  <!-- where DataNode stores block data -->
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:///root/hadoop/dfs/data</value>
+  </property>
+
+  <!-- reduce replication for small clusters/testing -->
+  <property>
+    <name>dfs.replication</name>
+    <value>1</value>
+  </property>
+</configuration>

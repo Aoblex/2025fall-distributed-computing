@@ -1,0 +1,20 @@
+services:
+    namenode:
+        image: hadoop:latest
+        hostname: namenode
+
+    datanode1:
+        image: hadoop:latest
+        hostname: datanode1
+
+    datanode2:
+        image: hadoop:latest
+        hostname: datanode2
+
+    resourcemanager:
+        image: hadoop:latest
+        hostname: resourcemanager
+
+    nodemanager:
+        image: hadoop:latest
+        hostname: nodemanager

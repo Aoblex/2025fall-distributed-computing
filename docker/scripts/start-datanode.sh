@@ -9,3 +9,5 @@ mkdir -p /root/hadoop/dfs/data
 (yarn nodemanager &)
 
 hdfs datanode
+
+exec bash

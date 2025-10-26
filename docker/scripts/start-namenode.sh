@@ -11,3 +11,5 @@ fi
 /usr/sbin/sshd || true
 
 hdfs namenode
+
+exec bash

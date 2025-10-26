@@ -3,11 +3,6 @@ name: hadoop-cluster
 services:
     namenode:
         image: hadoop:namenode
-        build:
-            context: .
-            dockerfile: docker/Dockerfiles/Dockerfile.namenode
-            cache_from:
-                - hadoop:base
         container_name: namenode
         tty: true
         stdin_open: true
@@ -16,18 +11,12 @@ services:
             - "9870:9870" # NN Web UI
             - "9000:9000" # NN RPC (fs.defaultFS)
         volumes:
-            # - namenode_data:/root/hadoop/dfs/name
             - ./course487:/course487
         restart: unless-stopped
         networks: [hadoop]
 
     datanode1:
         image: hadoop:datanode
-        build:
-            context: .
-            dockerfile: docker/Dockerfiles/Dockerfile.datanode
-            cache_from:
-                - hadoop:base
         container_name: datanode1
         tty: true
         stdin_open: true
@@ -36,18 +25,11 @@ services:
         ports:
             - "9864:9864" # DN Web UI
             - "8042:8042" # NM Web UI
-        # volumes:
-        #     - datanode1_data:/root/hadoop/dfs/data
         restart: unless-stopped
         networks: [hadoop]
 
     datanode2:
         image: hadoop:datanode
-        build:
-            context: .
-            dockerfile: docker/Dockerfiles/Dockerfile.datanode
-            cache_from:
-                - hadoop:base
         container_name: datanode2
         tty: true
         stdin_open: true
@@ -56,18 +38,11 @@ services:
         ports:
             - "9865:9864" # DN Web UI
             - "8043:8042" # NM Web UI
-        # volumes:
-        #     - datanode2_data:/root/hadoop/dfs/data
         restart: unless-stopped
         networks: [hadoop]
 
     resourcemanager:
         image: hadoop:resourcemanager
-        build:
-            context: .
-            dockerfile: docker/Dockerfiles/Dockerfile.resourcemanager
-            cache_from:
-                - hadoop:base
         container_name: resourcemanager
         tty: true
         stdin_open: true
@@ -80,11 +55,6 @@ services:
 
     historyserver:
         image: hadoop:jobhistoryserver
-        build:
-            context: .
-            dockerfile: docker/Dockerfiles/Dockerfile.jobhistoryserver
-            cache_from:
-                - hadoop:base
         container_name: jobhistoryserver
         tty: true
         stdin_open: true
@@ -94,11 +64,6 @@ services:
             - "19888:19888" # JHS Web UI
         restart: unless-stopped
         networks: [hadoop]
-
-# volumes:
-#     namenode_data:
-#     datanode1_data:
-#     datanode2_data:
 
 networks:
     hadoop:

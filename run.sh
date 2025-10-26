@@ -20,3 +20,5 @@ esac
 
 echo "Building hadoop:base for platform: $PLATFORM"
 docker buildx build --network host --progress=plain --debug --platform="$PLATFORM" -t hadoop:base -f ./docker/Dockerfiles/Dockerfile.base .
+
+docker compose up -d --build

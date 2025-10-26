@@ -6,6 +6,8 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfiles/Dockerfile.namenode
+            cache_from:
+                - hadoop:base
         container_name: namenode
         tty: true
         stdin_open: true
@@ -24,6 +26,8 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfiles/Dockerfile.datanode
+            cache_from:
+                - hadoop:base
         container_name: datanode1
         tty: true
         stdin_open: true
@@ -42,6 +46,8 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfiles/Dockerfile.datanode
+            cache_from:
+                - hadoop:base
         container_name: datanode2
         tty: true
         stdin_open: true
@@ -60,6 +66,8 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfiles/Dockerfile.resourcemanager
+            cache_from:
+                - hadoop:base
         container_name: resourcemanager
         tty: true
         stdin_open: true
@@ -75,6 +83,8 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfiles/Dockerfile.jobhistoryserver
+            cache_from:
+                - hadoop:base
         container_name: jobhistoryserver
         tty: true
         stdin_open: true

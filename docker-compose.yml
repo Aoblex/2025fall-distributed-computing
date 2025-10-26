@@ -1,20 +1,35 @@
+version: "3.8"
+
 services:
     namenode:
+        build: .
         image: hadoop:latest
         hostname: namenode
+        ports:
+            - "9000:9000" # HDFS RPC
+            - "9870:9870" # NameNode web UI
+        depends_on:
+            - datanode1
+            - datanode2
 
     datanode1:
+        build: .
         image: hadoop:latest
         hostname: datanode1
+        ports:
+            - "9864:9864" # DataNode web UI
 
     datanode2:
+        build: .
         image: hadoop:latest
         hostname: datanode2
+        ports:
+            - "9865:9864" # DataNode web UI
 
     resourcemanager:
+        build: .
         image: hadoop:latest
         hostname: resourcemanager
-
-    nodemanager:
-        image: hadoop:latest
-        hostname: nodemanager
+        ports:
+            - "8088:8088" # ResourceManager web UI
+            - "8032:8032" # ResourceManager RPC

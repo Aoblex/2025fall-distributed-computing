@@ -117,3 +117,19 @@ powerful        1
 processing      1
 simplifies      1
 ```
+
+## Running in Visual Studio Code
+
+First, install the extension `Container Tools`.
+
+![container-tools](./images/container-tools.png)
+
+After running `docker compose up -d`, you can see a list of running containers in the container tools tab.
+
+![running-containers](./images/running-containers.png)
+
+Right click on `hadoop:namenode` and select `Attatch Visual Studio Code`:
+
+![attach-namenode](./images/attach-namenode.png)
+
+Then you can run the container in a new vscode window!

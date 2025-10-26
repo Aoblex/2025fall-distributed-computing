@@ -14,7 +14,7 @@ services:
             - "9870:9870" # NN Web UI
             - "9000:9000" # NN RPC (fs.defaultFS)
         volumes:
-            - namenode_data:/root/hadoop/dfs/name
+            # - namenode_data:/root/hadoop/dfs/name
             - ./course487:/course487
         restart: unless-stopped
         networks: [hadoop]
@@ -32,8 +32,8 @@ services:
         ports:
             - "9864:9864" # DN Web UI
             - "8042:8042" # NM Web UI
-        volumes:
-            - datanode1_data:/root/hadoop/dfs/data
+        # volumes:
+        #     - datanode1_data:/root/hadoop/dfs/data
         restart: unless-stopped
         networks: [hadoop]
 
@@ -50,8 +50,8 @@ services:
         ports:
             - "9865:9864" # DN Web UI
             - "8043:8042" # NM Web UI
-        volumes:
-            - datanode2_data:/root/hadoop/dfs/data
+        # volumes:
+        #     - datanode2_data:/root/hadoop/dfs/data
         restart: unless-stopped
         networks: [hadoop]
 
@@ -85,10 +85,10 @@ services:
         restart: unless-stopped
         networks: [hadoop]
 
-volumes:
-    namenode_data:
-    datanode1_data:
-    datanode2_data:
+# volumes:
+#     namenode_data:
+#     datanode1_data:
+#     datanode2_data:
 
 networks:
     hadoop:

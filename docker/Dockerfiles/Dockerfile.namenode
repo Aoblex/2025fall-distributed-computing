@@ -18,6 +18,37 @@ COPY docker/config/hdfs-site.xml ${HADOOP_HOME}/etc/hadoop/hdfs-site.xml
 COPY docker/config/yarn-site.xml ${HADOOP_HOME}/etc/hadoop/yarn-site.xml
 COPY docker/config/mapred-site.xml ${HADOOP_HOME}/etc/hadoop/mapred-site.xml
 
+# Install tools
+RUN apt-get update && \
+    apt-get install -y vim git wget less && \
+    apt-get clean
+
+# Install miniconda and Python dependencies
+ARG TARGETARCH
+ENV CONDA_DIR=/opt/miniconda
+ENV PATH=$CONDA_DIR/bin:$PATH
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-$(case ${TARGETARCH} in "amd64") echo "x86_64";; "arm64") echo "aarch64";; esac).sh -O ~/miniconda.sh && \
+    /bin/bash ~/miniconda.sh -b -p $CONDA_DIR && \
+    rm ~/miniconda.sh
+
+# Setup conda environment
+RUN conda init --all && \
+    conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main && \
+    conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r && \
+    conda config --remove-key channels && \
+    conda config --set show_channel_urls yes && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free && \
+    conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r
+
+# Install conda tools
+RUN conda install -y pip && \
+    conda clean -a -y
+
+# Install Python packages
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
+    pip install --no-cache-dir pandas numpy pyarrow
+
 # Startup script
 COPY docker/scripts/start-namenode.sh /usr/local/bin/start-namenode.sh
 RUN chmod +x /usr/local/bin/start-namenode.sh

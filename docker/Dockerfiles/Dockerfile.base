@@ -2,9 +2,12 @@ FROM ubuntu:22.04
 
 USER root
 
+# Allow build systems (buildx) to inject TARGETARCH automatically.
+# Fallback to amd64 when not provided so local `docker build` still works.
+ARG TARGETARCH=amd64
 ENV HADOOP_VERSION=3.3.6 \
     HADOOP_HOME=/opt/hadoop \
-    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-arm64/
+    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-${TARGETARCH}/
 ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 
 RUN apt-get update && \

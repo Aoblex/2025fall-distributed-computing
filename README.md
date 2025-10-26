@@ -74,7 +74,11 @@ Click `namenode` and the `Exec` tab, then run:
 root@namenode:/opt/hadoop# bash /course487/week4/mini-lab/test.sh
 ```
 
-To test the functionality. You can safely ignore the warning: `WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable`
+To test the functionality.
+
+![namenode](./images/namenode.png)
+
+You can safely ignore the warning: `WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable`
 
 At the end of the output, you will see the content below if everything works fine:
 

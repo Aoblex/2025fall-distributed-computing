@@ -1,5 +1,3 @@
-version: "3.8"
-
 name: hadoop-cluster
 
 services:
@@ -15,7 +13,7 @@ services:
             - "9000:9000" # NN RPC (fs.defaultFS)
         volumes:
             - namenode_data:/root/hadoop/dfs/name
-            - course487:/course487
+            - ./course487:/course487
         restart: unless-stopped
         networks: [hadoop]
 

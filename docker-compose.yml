@@ -7,6 +7,8 @@ services:
             context: .
             dockerfile: docker/Dockerfiles/Dockerfile.namenode
         container_name: namenode
+        tty: true
+        stdin_open: true
         hostname: namenode
         ports:
             - "9870:9870" # NN Web UI
@@ -23,6 +25,8 @@ services:
             context: .
             dockerfile: docker/Dockerfiles/Dockerfile.datanode
         container_name: datanode1
+        tty: true
+        stdin_open: true
         hostname: datanode1
         depends_on: [namenode]
         ports:
@@ -39,6 +43,8 @@ services:
             context: .
             dockerfile: docker/Dockerfiles/Dockerfile.datanode
         container_name: datanode2
+        tty: true
+        stdin_open: true
         hostname: datanode2
         depends_on: [namenode]
         ports:
@@ -55,6 +61,8 @@ services:
             context: .
             dockerfile: docker/Dockerfiles/Dockerfile.resourcemanager
         container_name: resourcemanager
+        tty: true
+        stdin_open: true
         hostname: resourcemanager
         depends_on: [namenode]
         ports:
@@ -68,6 +76,8 @@ services:
             context: .
             dockerfile: docker/Dockerfiles/Dockerfile.jobhistoryserver
         container_name: jobhistoryserver
+        tty: true
+        stdin_open: true
         hostname: jobhistoryserver
         depends_on: [resourcemanager, namenode]
         ports:

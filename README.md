@@ -38,89 +38,24 @@ Open docker desktop, in the settings page, search `daemon` and change the settin
 If you are using mac, run the command below:
 
 ```bash
-docker buildx build \
-    --load \
-    --network host \
-    -t hadoop:base \
-    -f docker/Dockerfiles/Dockerfile.base \
-    .
-
-docker buildx build \
-    --load \
-    --network host \
-    -t hadoop:datanode \
-    -f docker/Dockerfiles/Dockerfile.datanode \
-    .
-
-docker buildx build \
-    --load \
-    --network host \
-    -t hadoop:jobhistoryserver \
-    -f docker/Dockerfiles/Dockerfile.jobhistoryserver \
-    .
-
-docker buildx build \
-    --load \
-    --network host \
-    -t hadoop:namenode \
-    -f docker/Dockerfiles/Dockerfile.namenode \
-    .
-
-docker buildx build \
-    --load \
-    --network host \
-    -t hadoop:resourcemanager \
-    -f docker/Dockerfiles/Dockerfile.resourcemanager \
-    .
+zsh> ./build.sh
 ```
 
 If you are using windows, run:
 
-```pwsh
-docker buildx build `
-    --load `
-    --network host `
-    -t hadoop:base `
-    -f docker/Dockerfiles/Dockerfile.base `
-    .
-
-docker buildx build `
-    --load `
-    --network host `
-    -t hadoop:datanode `
-    -f docker/Dockerfiles/Dockerfile.datanode `
-    .
-
-docker buildx build `
-    --load `
-    --network host `
-    -t hadoop:jobhistoryserver `
-    -f docker/Dockerfiles/Dockerfile.jobhistoryserver `
-    .
-docker buildx build `
-    --load `
-    --network host `
-    -t hadoop:namenode `
-    -f docker/Dockerfiles/Dockerfile.namenode `
-    .
-
-docker buildx build `
-    --load `
-    --network host `
-    -t hadoop:resourcemanager `
-    -f docker/Dockerfiles/Dockerfile.resourcemanager `
-    .
+```sh
+powershell> ./build.ps1
 ```
 
-## Build the Cluster
+## Run the Cluster
 
-Then compose:
+Use the compose command to run the cluster:
 
 ```bash
 docker compose up -d
 ```
 
-To stop the cluster, run:
+To stop the cluster, run in your terminal:
 
 ```bash
 docker compose down

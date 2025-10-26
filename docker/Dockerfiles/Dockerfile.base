@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM docker.1ms.run/ubuntu:22.04
 
 USER root
 
@@ -14,7 +14,8 @@ ENV LD_LIBRARY_PATH=$HADOOP_COMMON_LIB_NATIVE_DIR:$LD_LIBRARY_PATH
 ENV HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=$HADOOP_HOME/lib/native"
 ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 
-RUN apt-get update && \
+RUN sed -i.bak -E 's|http://(archive|security).ubuntu.com/ubuntu|https://mirrors.tuna.tsinghua.edu.cn/ubuntu|g' /etc/apt/sources.list && \
+    apt-get update && \
     apt-get install -y curl wget tar openssh-server ssh pdsh vim net-tools python3 openjdk-8-jdk && \
     ln -s /usr/bin/python3 /usr/bin/python && \
     apt-get clean && \

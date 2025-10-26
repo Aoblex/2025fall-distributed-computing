@@ -3,95 +3,85 @@ version: "3.8"
 name: hadoop-cluster
 
 services:
-  hadoop-base:
-    image: hadoop:base
-    build:
-      context: .
-      dockerfile: docker/Dockerfiles/Dockerfile.base
-    container_name: hadoop-base
-    command: ["bash", "-lc", "sleep infinity"]
-    restart: unless-stopped
-    networks: [hadoop]
+    namenode:
+        image: hadoop:namenode
+        build:
+            context: .
+            dockerfile: docker/Dockerfiles/Dockerfile.namenode
+        container_name: namenode
+        hostname: namenode
+        ports:
+            - "9870:9870" # NN Web UI
+            - "9000:9000" # NN RPC (fs.defaultFS)
+        volumes:
+            - namenode_data:/root/hadoop/dfs/name
+            - course487:/course487
+        restart: unless-stopped
+        networks: [hadoop]
 
-  namenode:
-    image: hadoop:namenode
-    build:
-      context: .
-      dockerfile: docker/Dockerfiles/Dockerfile.namenode
-    container_name: namenode
-    hostname: namenode
-    depends_on: [hadoop-base]
-    ports:
-      - "9870:9870"   # NN Web UI
-      - "9000:9000"   # NN RPC (fs.defaultFS)
-    volumes:
-      - namenode_data:/root/hadoop/dfs/name
-    restart: unless-stopped
-    networks: [hadoop]
+    datanode1:
+        image: hadoop:datanode
+        build:
+            context: .
+            dockerfile: docker/Dockerfiles/Dockerfile.datanode
+        container_name: datanode1
+        hostname: datanode1
+        depends_on: [namenode]
+        ports:
+            - "9864:9864" # DN Web UI
+            - "8042:8042" # NM Web UI
+        volumes:
+            - datanode1_data:/root/hadoop/dfs/data
+        restart: unless-stopped
+        networks: [hadoop]
 
-  datanode1:
-    image: hadoop:datanode
-    build:
-      context: .
-      dockerfile: docker/Dockerfiles/Dockerfile.datanode
-    container_name: datanode1
-    hostname: datanode1
-    depends_on: [namenode]
-    ports:
-      - "9864:9864"   # DN Web UI
-      - "8042:8042"   # NM Web UI
-    volumes:
-      - datanode1_data:/root/hadoop/dfs/data
-    restart: unless-stopped
-    networks: [hadoop]
+    datanode2:
+        image: hadoop:datanode
+        build:
+            context: .
+            dockerfile: docker/Dockerfiles/Dockerfile.datanode
+        container_name: datanode2
+        hostname: datanode2
+        depends_on: [namenode]
+        ports:
+            - "9865:9864" # DN Web UI
+            - "8043:8042" # NM Web UI
+        volumes:
+            - datanode2_data:/root/hadoop/dfs/data
+        restart: unless-stopped
+        networks: [hadoop]
 
-  datanode2:
-    image: hadoop:datanode
-    build:
-      context: .
-      dockerfile: docker/Dockerfiles/Dockerfile.datanode
-    container_name: datanode2
-    hostname: datanode2
-    depends_on: [namenode]
-    ports:
-      - "9865:9864"   # DN Web UI
-      - "8043:8042"   # NM Web UI
-    volumes:
-      - datanode2_data:/root/hadoop/dfs/data
-    restart: unless-stopped
-    networks: [hadoop]
+    resourcemanager:
+        image: hadoop:resourcemanager
+        build:
+            context: .
+            dockerfile: docker/Dockerfiles/Dockerfile.resourcemanager
+        container_name: resourcemanager
+        hostname: resourcemanager
+        depends_on: [namenode]
+        ports:
+            - "8088:8088" # RM Web UI
+        restart: unless-stopped
+        networks: [hadoop]
 
-  resourcemanager:
-    image: hadoop:resourcemanager
-    build:
-      context: .
-      dockerfile: docker/Dockerfiles/Dockerfile.resourcemanager
-    container_name: resourcemanager
-    hostname: resourcemanager
-    depends_on: [hadoop-base]
-    ports:
-      - "8088:8088"   # RM Web UI
-    restart: unless-stopped
-    networks: [hadoop]
-
-  historyserver:
-    image: hadoop:jobhistoryserver
-    build:
-      context: .
-      dockerfile: docker/Dockerfiles/Dockerfile.jobhistoryserver
-    container_name: jobhistoryserver
-    hostname: jobhistoryserver
-    depends_on: [resourcemanager, namenode]
-    ports:
-      - "19888:19888" # JHS Web UI
-    restart: unless-stopped
-    networks: [hadoop]
+    historyserver:
+        image: hadoop:jobhistoryserver
+        build:
+            context: .
+            dockerfile: docker/Dockerfiles/Dockerfile.jobhistoryserver
+        container_name: jobhistoryserver
+        hostname: jobhistoryserver
+        depends_on: [resourcemanager, namenode]
+        ports:
+            - "19888:19888" # JHS Web UI
+        restart: unless-stopped
+        networks: [hadoop]
 
 volumes:
-  namenode_data:
-  datanode1_data:
-  datanode2_data:
+    namenode_data:
+    datanode1_data:
+    datanode2_data:
 
 networks:
-  hadoop:
-    driver: bridge
+    hadoop:
+        driver: bridge

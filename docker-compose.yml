@@ -9,7 +9,6 @@ services:
         hostname: namenode
         ports:
             - "9870:9870" # NN Web UI
-            - "9000:9000" # NN RPC (fs.defaultFS)
         volumes:
             - ./course487:/course487
         restart: unless-stopped

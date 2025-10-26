@@ -133,3 +133,18 @@ Right click on `hadoop:namenode` and select `Attatch Visual Studio Code`:
 ![attach-namenode](./images/attach-namenode.png)
 
 Then you can run the container in a new vscode window!
+
+## WebUI
+
+Once the cluster is running, you can access the various web interfaces to monitor the status of HDFS and YARN.
+
+-   **NameNode Web UI**: [http://localhost:9870](http://localhost:9870)
+    -   Monitor the health and status of the HDFS filesystem.
+-   **ResourceManager Web UI**: [http://localhost:8088](http://localhost:8088)
+    -   Track applications and resource usage in the YARN cluster.
+-   **JobHistoryServer Web UI**: [http://localhost:19888](http://localhost:19888)
+    -   View details of completed MapReduce jobs.
+-   **DataNode 1 Web UI**: [http://localhost:9864](http://localhost:9864)
+-   **DataNode 2 Web UI**: [http://localhost:9865](http://localhost:9865)
+-   **NodeManager 1 Web UI (on datanode1)**: [http://localhost:8042](http://localhost:8042)
+-   **NodeManager 2 Web UI (on datanode2)**: [http://localhost:8043](http://localhost:8043)

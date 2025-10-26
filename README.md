@@ -87,3 +87,33 @@ docker compose down
 ```
 
 ## Running the Cluster
+
+![hadoop-cluster](./images/hadoop-cluster.png)
+
+After running `docker compose down`, open your docker desktop, you can see the nodes are now running in the background.
+
+Click `namenode` and the `Exec` tab, then run:
+
+```
+# bash
+root@namenode:/opt/hadoop# bash /course487/week4/mini-lab/test.sh
+```
+
+To test the functionality. You can safely ignore the warning: `WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable`
+
+At the end of the output, you will see the content below if everything works fine:
+
+```
+Hadoop  3
+Hello   2
+MapReduce       2
+World   1
+a       1
+big     1
+data    1
+framework       1
+is      2
+powerful        1
+processing      1
+simplifies      1
+```

@@ -23,7 +23,7 @@ COPY docker/scripts/start-namenode.sh /usr/local/bin/start-namenode.sh
 RUN chmod +x /usr/local/bin/start-namenode.sh
 
 # NameNode RPC and Web UI
-EXPOSE 9000 9870
+EXPOSE 9870
 
 # Persist name dir
 VOLUME ["/root/hadoop/dfs/name"]

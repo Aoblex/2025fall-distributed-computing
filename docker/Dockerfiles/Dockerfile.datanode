@@ -23,6 +23,6 @@ COPY docker/scripts/start-datanode.sh /usr/local/bin/start-datanode.sh
 RUN chmod +x /usr/local/bin/start-datanode.sh
 
 # DataNode + NodeManager ports (Hadoop 3.x defaults)
-EXPOSE 9864 9866 8042
+EXPOSE 9864 8042
 
 ENTRYPOINT ["/usr/local/bin/start-datanode.sh"]

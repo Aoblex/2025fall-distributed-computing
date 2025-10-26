@@ -4,8 +4,8 @@ USER root
 
 ENV HADOOP_VERSION=3.3.6 \
     HADOOP_HOME=/opt/hadoop \
-    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
-    PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 
 RUN apt-get update && \
     apt-get install -y curl wget tar openssh-server ssh pdsh vim net-tools python3 openjdk-8-jdk && \

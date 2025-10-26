@@ -5,4 +5,7 @@ mkdir -p /root/hadoop/dfs/data
 
 /usr/sbin/sshd || true
 
+# Start YARN NodeManager alongside DataNode
+(yarn nodemanager &)
+
 hdfs datanode

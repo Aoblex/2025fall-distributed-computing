@@ -16,10 +16,10 @@ ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 
 RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 RUN sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+RUN sed -i 's/ports.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 
 RUN apt-get update && \
-    apt-get install -y curl wget tar openssh-server ssh pdsh vim net-tools python3 openjdk-8-jdk && \
-    ln -s /usr/bin/python3 /usr/bin/python && \
+    apt-get install -y wget tar openssh-server openjdk-8-jdk && \
     apt-get clean
 
 RUN wget https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \

@@ -33,9 +33,7 @@ Open docker desktop, in the settings page, search `daemon` and change the settin
 }
 ```
 
-## Build hadoop:base image
-
-First build `hadoop:base`:
+## Build Images
 
 ```bash
 docker buildx build \
@@ -44,6 +42,34 @@ docker buildx build \
     -t hadoop:base \
     -f docker/Dockerfiles/Dockerfile.base \
     .
+
+docker buildx build \
+    --load \
+    --network host \
+    -t hadoop:datanode \
+    -f docker/Dockerfiles/Dockerfile.datanode \
+    .
+
+docker buildx build \
+    --load \
+    --network host \
+    -t hadoop:jobhistoryserver \
+    -f docker/Dockerfiles/Dockerfile.jobhistoryserver \
+    .
+
+docker buildx build \
+    --load \
+    --network host \
+    -t hadoop:namenode \
+    -f docker/Dockerfiles/Dockerfile.namenode \
+    .
+
+docker buildx build \
+    --load \
+    --network host \
+    -t hadoop:resourcemanager \
+    -f docker/Dockerfiles/Dockerfile.resourcemanager \
+    .
 ```
 
 ## Build the Cluster
@@ -51,5 +77,13 @@ docker buildx build \
 Then compose:
 
 ```bash
-docker compose up -d --build
+docker compose up -d
 ```
+
+To stop the cluster, run:
+
+```bash
+docker compose down
+```
+
+## Running the Cluster

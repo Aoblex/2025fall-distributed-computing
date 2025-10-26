@@ -188,3 +188,16 @@ Once the cluster is running, you can access the various web interfaces to monito
 -   **DataNode 2 Web UI**: [http://localhost:9865](http://localhost:9865)
 -   **NodeManager 1 Web UI (on datanode1)**: [http://localhost:8042](http://localhost:8042)
 -   **NodeManager 2 Web UI (on datanode2)**: [http://localhost:8043](http://localhost:8043)
+
+## Files
+
+The host and the container share same files under the `course487` folder, so if you want to run some commands, put it under that folder and run :)
+
+This behaviour is controlled by:
+
+```yaml
+volumes:
+    - ./course487:/course487
+```
+
+Since only `namenode` has this volumes setting, you can only use the `course487` folder in `namenode`. If you want to use it in other nodes, add this setting in `docker-compose.yml` and then recompose.

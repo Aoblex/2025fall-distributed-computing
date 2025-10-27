@@ -65,9 +65,15 @@ docker compose down
 
 ![hadoop-cluster](./images/hadoop-cluster.png)
 
-After running `docker compose down`, open your docker desktop, you can see the nodes are now running in the background.
+After running `docker compose up`, open your docker desktop, you can see the nodes are now running in the background.
 
-Click `namenode` and the `Exec` tab, then run:
+You can now enter the namenode by this command:
+
+```bash
+docker exec -it namenode /bin/bash
+```
+
+Or in the docker desktop, click `namenode` and the `Exec` tab, then run:
 
 ```
 # bash

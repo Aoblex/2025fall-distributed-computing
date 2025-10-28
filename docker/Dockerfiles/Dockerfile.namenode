@@ -60,4 +60,6 @@ EXPOSE 9870
 # Persist name dir
 VOLUME ["/root/hadoop/dfs/name"]
 
+WORKDIR /course487/labs
+
 ENTRYPOINT ["/usr/local/bin/start-namenode.sh"]

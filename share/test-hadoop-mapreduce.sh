@@ -8,8 +8,8 @@ MapReduce simplifies big data processing
 EOF
 
 hdfs dfs -mkdir -p /test/input
-hdfs dfs -put /root/share/input.txt /test/input
-hdfs dfs -rm -r /test/output || true
+hdfs dfs -put -f /root/share/input.txt /test/input
+hdfs dfs -rm -r -f /test/output
 
 hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar \
     wordcount \

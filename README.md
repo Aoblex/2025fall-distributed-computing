@@ -33,91 +33,60 @@ Open docker desktop, in the settings page, search `daemon` and change the settin
 }
 ```
 
-## Build Images
+## Building Images
 
-If you are using mac, run the command below:
+Run `make all` to build all images.
+
+Run `make base` to build the base image that all nodes and servers depend on.
+
+Run `make clean` to remove build cache.
+
+## Running the Cluster
+
+To run the cluster, run:
 
 ```bash
-zsh> ./build.sh
+make run-cluster
 ```
 
-If you are using windows, run:
-
-```sh
-powershell> ./build.ps1
-```
-
-## Run the Cluster
-
-Use the compose command to run the cluster:
+or
 
 ```bash
 docker compose up -d
 ```
 
-To stop the cluster, run in your terminal:
+Then you can enter `namenode` by:
+
+```bash
+docker exec -it namenode bash
+```
+
+To stop it, run:
+
+```bash
+make stop-cluster
+```
+
+or
 
 ```bash
 docker compose down
 ```
 
-## Running the Cluster
+## Testing Cluster Functionality
 
-![hadoop-cluster](./images/hadoop-cluster.png)
-
-After running `docker compose up`, open your docker desktop, you can see the nodes are now running in the background.
-
-You can now enter the namenode by this command:
+To test hadoop mapreduce, run:
 
 ```bash
-docker exec -it namenode /bin/bash
+container> bash ~/share/examples/hadoop/test.sh
 ```
 
-Or in the docker desktop, click `namenode` and the `Exec` tab, then run:
+To test spark, run:
 
+```bash
+container> cd ~/share/examples/spark
+container> make all
 ```
-# bash
-root@namenode:/opt/hadoop# bash /course487/week4/mini-lab/test.sh
-```
-
-To test the functionality.
-
-![namenode](./images/namenode.png)
-
-You can safely ignore the warning: `WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable`
-
-At the end of the output, you will see the content below if everything works fine:
-
-```
-Hadoop  3
-Hello   2
-MapReduce       2
-World   1
-a       1
-big     1
-data    1
-framework       1
-is      2
-powerful        1
-processing      1
-simplifies      1
-```
-
-## Running in Visual Studio Code
-
-First, install the extension `Container Tools`.
-
-![container-tools](./images/container-tools.png)
-
-After running `docker compose up -d`, you can see a list of running containers in the container tools tab.
-
-![running-containers](./images/running-containers.png)
-
-Right click on `hadoop:namenode` and select `Attatch Visual Studio Code`:
-
-![attach-namenode](./images/attach-namenode.png)
-
-Then you can run the container in a new vscode window!
 
 ## WebUI
 
@@ -136,13 +105,15 @@ Once the cluster is running, you can access the various web interfaces to monito
 
 ## Files
 
-The host and the container share same files under the `course487` folder, so if you want to run some commands, put it under that folder and run :)
+The host and the container share same files under the `share` folder.
 
-This behaviour is controlled by:
+This behaviour is controlled by `docker-compose.yml`:
 
 ```yaml
-volumes:
-    - ./course487:/course487
+services:
+    namenode:
+        volumes:
+            - ./share:/root/share
 ```
 
-Since only `namenode` has this volumes setting, you can only use the `course487` folder in `namenode`. If you want to use it in other nodes, add this setting in `docker-compose.yml` and then recompose.
+Since only `namenode` has this volumes setting, you can only use the `share` folder in `namenode`. If you want to use it in other nodes, add this setting in `docker-compose.yml` and then recompose.

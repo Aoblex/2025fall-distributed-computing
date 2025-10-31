@@ -1,30 +1,59 @@
-FROM ubuntu:22.04
+# ============================================================
+# Base Image
+# ============================================================
 
+FROM ubuntu:22.04
 USER root
 
-# Allow build systems (buildx) to inject TARGETARCH automatically.
-# Fallback to amd64 when not provided so local `docker build` still works.
+
+# ============================================================
+# Environment Variables
+# ============================================================
+
 ARG TARGETARCH
-ENV HADOOP_VERSION=3.3.6 \
+
+# Set environment variables
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-${TARGETARCH}/ \
+    HADOOP_VERSION=3.3.6 \
     HADOOP_HOME=/opt/hadoop \
-    JAVA_HOME=/usr/lib/jvm/java-8-openjdk-${TARGETARCH}/ \
+    HADOOP_COMMON_LIB_NATIVE_DIR=/opt/hadoop/lib/native \
+    HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop \
+    LD_LIBRARY_PATH=/opt/hadoop/lib/native \
+    HADOOP_OPTS="-Djava.library.path=/opt/hadoop/lib/native" \
     SPARK_VERSION=3.5.6 \
-    SPARK_HOME=/opt/spark
-ENV HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
-ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
-ENV LD_LIBRARY_PATH=$HADOOP_HOME/lib/native
-ENV HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
-ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$SPARK_HOME/bin
+    SPARK_HOME=/opt/spark \
+    CONDA_DIR=/opt/miniconda \
+    PATH=$PATH:/opt/hadoop/bin:/opt/hadoop/sbin:/opt/spark/bin:/opt/spark/sbin:/opt/miniconda/bin
 
-RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
-RUN sed -i 's/security.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
-RUN sed -i 's/ports.ubuntu.com/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+# ============================================================
+# System Configuration and Dependencies
+# ============================================================
 
+# Use faster Chinese mirrors (USTC)
+RUN sed -i 's|deb.debian.org|mirrors.ustc.edu.cn|g' /etc/apt/sources.list && \
+    sed -i 's|security.debian.org|mirrors.ustc.edu.cn|g' /etc/apt/sources.list && \
+    sed -i 's|ports.ubuntu.com|mirrors.ustc.edu.cn|g' /etc/apt/sources.list
+
+# Install base tools
 RUN apt-get update && \
-    apt-get install -y wget tar openssh-server openjdk-8-jdk && \
-    apt-get clean
+    apt-get install -y \
+        wget curl tar \
+        vim git less \
+        openssh-server \
+        bsdmainutils \
+        openjdk-8-jdk \
+        libsnappy1v5 libbz2-1.0 \
+        libzstd1 libssl3 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN wget https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
+
+# ============================================================
+# Hadoop Installation
+# ============================================================
+
+# Download and extract Hadoop
+RUN wget -q https://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && \
     tar -xzf hadoop-${HADOOP_VERSION}.tar.gz -C /opt/ && \
     mv /opt/hadoop-${HADOOP_VERSION} /opt/hadoop && \
     rm hadoop-${HADOOP_VERSION}.tar.gz
@@ -43,19 +72,68 @@ COPY ${HADOOP_CONFIG}/hdfs-site.xml ${HADOOP_CONF_DIR}/hdfs-site.xml
 COPY ${HADOOP_CONFIG}/yarn-site.xml ${HADOOP_CONF_DIR}/yarn-site.xml
 COPY ${HADOOP_CONFIG}/mapred-site.xml ${HADOOP_CONF_DIR}/mapred-site.xml
 
-# Install Spark
-RUN wget https://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3-scala2.13.tgz && \
-    tar -xzf spark-${SPARK_VERSION}-bin-hadoop3.tgz -C /opt/ && \
-    mv /opt/spark-${SPARK_VERSION}-bin-hadoop3 ${SPARK_HOME} && \
-    rm spark-${SPARK_VERSION}-bin-hadoop3.tgz
 
+# ============================================================
+# Spark Installation
+# ============================================================
+
+# Download and extract Spark
+RUN wget -q https://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3-scala2.13.tgz && \
+    tar -xzf spark-${SPARK_VERSION}-bin-hadoop3-scala2.13.tgz -C /opt/ && \
+    mv /opt/spark-${SPARK_VERSION}-bin-hadoop3-scala2.13 /opt/spark && \
+    rm spark-${SPARK_VERSION}-bin-hadoop3-scala2.13.tgz
+
+
+# ============================================================
+# SSH Configuration
+# ============================================================
+
+# Configure SSH for Hadoop
 RUN ssh-keygen -q -t rsa -N '' -f /root/.ssh/id_rsa && \
     cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys && \
-    chmod 600 /root/.ssh/authorized_keys
+    chmod 600 /root/.ssh/authorized_keys && \
+    mkdir -p /var/run/sshd
 
-# create sshd run dir
-RUN mkdir -p /var/run/sshd
 
-# set working directory
+# ============================================================
+# Conda & Python Setup
+# ============================================================
+
+# Install Miniconda
+RUN ARCH=$(case "${TARGETARCH}" in \
+        amd64) echo "x86_64" ;; \
+        arm64) echo "aarch64" ;; \
+        *) echo "unknown" ;; \
+    esac) && \
+    wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-${ARCH}.sh -O /tmp/miniconda.sh && \
+    bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
+    rm /tmp/miniconda.sh
+
+# Accept Anaconda TOS
+RUN $CONDA_DIR/bin/conda tos accept \
+        --override-channels --channel \
+        https://repo.anaconda.com/pkgs/main && \
+    $CONDA_DIR/bin/conda tos accept \
+        --override-channels --channel \
+        https://repo.anaconda.com/pkgs/r
+
+# Configure Conda
+RUN $CONDA_DIR/bin/conda init --all && \
+    $CONDA_DIR/bin/conda config --set show_channel_urls yes && \
+    $CONDA_DIR/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main && \
+    $CONDA_DIR/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free && \
+    $CONDA_DIR/bin/conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r && \
+    $CONDA_DIR/bin/conda install -y pip && \
+    $CONDA_DIR/bin/conda clean -a -y
+
+# Install Python packages
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
+    pip install --no-cache-dir pandas numpy pyarrow "pyspark==3.2.4"
+
+
+# ============================================================
+# Final Configurations
+# ============================================================
+
 WORKDIR /opt/hadoop
 CMD ["bash"]

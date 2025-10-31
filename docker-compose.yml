@@ -10,7 +10,7 @@ services:
         ports:
             - "9870:9870" # NN Web UI
         volumes:
-            - ./course487:/course487
+            - ./share:/root/share
         restart: unless-stopped
         networks: [hadoop]
 

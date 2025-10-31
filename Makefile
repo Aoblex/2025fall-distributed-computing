@@ -44,7 +44,6 @@ RESOURCEMANAGER_DOCKERFILE := $(DOCKERFILES_DIR)/Dockerfile.resourcemanager
 # Build targets
 # ------------------------------------------------------
 
-# 默认：构建所有镜像
 all: base datanode jobhistoryserver namenode resourcemanager
 
 base:
@@ -93,15 +92,32 @@ run-cluster: all
 stop-cluster:
 	$(COMPOSE) -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down
 
-# ------------------------------------------------------
-# Utility targets
-# ------------------------------------------------------
+# ======================================================
+# Stop individual Hadoop service containers
+# ======================================================
 
-# 停止并删除所有单容器运行实例
-stop-all:
-	-$(DOCKER) stop $$(docker ps -q --filter "name=$(CONTAINER_PREFIX)-")
-	-$(DOCKER) rm $$(docker ps -aq --filter "name=$(CONTAINER_PREFIX)-")
+# 停止并删除单个容器
+stop-namenode:
+	-$(DOCKER) stop namenode
+	-$(DOCKER) rm namenode
 
-# 清理构建缓存
+stop-datanode:
+	-$(DOCKER) stop datanode
+	-$(DOCKER) rm datanode
+
+stop-resourcemanager:
+	-$(DOCKER) stop resourcemanager
+	-$(DOCKER) rm resourcemanager
+
+stop-jobhistoryserver:
+	-$(DOCKER) stop jobhistoryserver
+	-$(DOCKER) rm jobhistoryserver
+
+stop-base:
+	-$(DOCKER) stop base
+	-$(DOCKER) rm base
+
+stop-all: stop-namenode stop-datanode stop-resourcemanager stop-jobhistoryserver stop-base
+
 clean:
 	$(DOCKER) builder prune -f

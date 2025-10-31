@@ -1,0 +1,5 @@
+Hello Hadoop
+Hello World
+Hadoop is a framework
+Hadoop MapReduce is powerful
+MapReduce simplifies big data processing

@@ -61,63 +61,20 @@ namenode: base
 resourcemanager: base
 	$(BUILDX) $(COMMON_OPTS) -t $(IMAGE_PREFIX):resourcemanager -f $(RESOURCEMANAGER_DOCKERFILE) .
 
-# ------------------------------------------------------
-# Run individual containers (auto-build dependency)
-# ------------------------------------------------------
-
-run-base: base
-	$(DOCKER) run -it --rm --name $(CONTAINER_PREFIX)-base $(IMAGE_PREFIX):base bash
-
-run-datanode: datanode
-	$(DOCKER) run -d --name $(CONTAINER_PREFIX)-datanode $(NETWORK) $(IMAGE_PREFIX):datanode
-
-run-jobhistoryserver: jobhistoryserver
-	$(DOCKER) run -d --name $(CONTAINER_PREFIX)-jobhistoryserver $(NETWORK) $(IMAGE_PREFIX):jobhistoryserver
-
-run-namenode: namenode
-	$(DOCKER) run -d --name $(CONTAINER_PREFIX)-namenode $(NETWORK) -p 9870:9870 $(IMAGE_PREFIX):namenode
-
-run-resourcemanager: resourcemanager
-	$(DOCKER) run -d --name $(CONTAINER_PREFIX)-resourcemanager $(NETWORK) -p 8088:8088 $(IMAGE_PREFIX):resourcemanager
 
 # ------------------------------------------------------
 # Run Hadoop cluster using docker-compose
 # ------------------------------------------------------
 
-# 运行整个 Hadoop 集群（基于 docker-compose.yml）
 run-cluster: all
 	$(COMPOSE) -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) up -d
 
-# 停止整个集群
 stop-cluster:
 	$(COMPOSE) -p $(COMPOSE_PROJECT) -f $(COMPOSE_FILE) down
 
-# ======================================================
-# Stop individual Hadoop service containers
-# ======================================================
-
-# 停止并删除单个容器
-stop-namenode:
-	-$(DOCKER) stop namenode
-	-$(DOCKER) rm namenode
-
-stop-datanode:
-	-$(DOCKER) stop datanode
-	-$(DOCKER) rm datanode
-
-stop-resourcemanager:
-	-$(DOCKER) stop resourcemanager
-	-$(DOCKER) rm resourcemanager
-
-stop-jobhistoryserver:
-	-$(DOCKER) stop jobhistoryserver
-	-$(DOCKER) rm jobhistoryserver
-
-stop-base:
-	-$(DOCKER) stop base
-	-$(DOCKER) rm base
-
-stop-all: stop-namenode stop-datanode stop-resourcemanager stop-jobhistoryserver stop-base
+# -------------------------------------------------------
+# Cleanup targets
+# -------------------------------------------------------
 
 clean:
 	$(DOCKER) builder prune -f

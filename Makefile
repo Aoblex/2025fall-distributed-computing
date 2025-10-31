@@ -10,7 +10,7 @@ COMPOSE := docker compose
 # Common build options
 NETWORK := --network host
 LOAD := --load
-COMMON_OPTS := $(LOAD) $(NETWORK)
+COMMON_OPTS := $(LOAD) $(NETWORK) --platform linux/amd64
 
 # Dockerfile directory
 DOCKERFILES_DIR := docker/Dockerfiles

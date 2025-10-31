@@ -4,6 +4,7 @@ services:
     namenode:
         image: hadoop:namenode
         container_name: namenode
+        platform: linux/amd64
         tty: true
         stdin_open: true
         hostname: namenode
@@ -17,6 +18,7 @@ services:
     datanode1:
         image: hadoop:datanode
         container_name: datanode1
+        platform: linux/amd64
         tty: true
         stdin_open: true
         hostname: datanode1
@@ -30,6 +32,7 @@ services:
     datanode2:
         image: hadoop:datanode
         container_name: datanode2
+        platform: linux/amd64
         tty: true
         stdin_open: true
         hostname: datanode2
@@ -43,6 +46,7 @@ services:
     resourcemanager:
         image: hadoop:resourcemanager
         container_name: resourcemanager
+        platform: linux/amd64
         tty: true
         stdin_open: true
         hostname: resourcemanager
@@ -55,6 +59,7 @@ services:
     historyserver:
         image: hadoop:jobhistoryserver
         container_name: jobhistoryserver
+        platform: linux/amd64
         tty: true
         stdin_open: true
         hostname: jobhistoryserver

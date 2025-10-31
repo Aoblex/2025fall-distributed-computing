@@ -29,13 +29,13 @@ ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ \
 # ============================================================
 
 # Use faster Chinese mirrors (USTC)
-RUN sed -i 's|deb.debian.org|mirrors.ustc.edu.cn|g' /etc/apt/sources.list && \
-    sed -i 's|security.debian.org|mirrors.ustc.edu.cn|g' /etc/apt/sources.list
+RUN sed -i 's|archive.ubuntu.com|mirrors.ustc.edu.cn|g' /etc/apt/sources.list && \
+    sed -i 's|security.ubuntu.com|mirrors.ustc.edu.cn|g' /etc/apt/sources.list
 
 # Install base tools
 RUN apt-get update && \
     apt-get install -y \
-        wget curl tar \
+        wget curl tar make \
         vim git less \
         openssh-server \
         bsdmainutils \

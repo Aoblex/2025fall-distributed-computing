@@ -2,22 +2,6 @@ FROM hadoop:base
 
 USER root
 
-# Run Hadoop daemons as root inside container
-ENV HDFS_NAMENODE_USER=root \
-    HDFS_DATANODE_USER=root \
-    YARN_RESOURCEMANAGER_USER=root \
-    YARN_NODEMANAGER_USER=root \
-    MAPRED_HISTORYSERVER_USER=root
-
-# Ensure Hadoop picks up JAVA_HOME
-RUN echo "export JAVA_HOME=${JAVA_HOME}" >> ${HADOOP_HOME}/etc/hadoop/hadoop-env.sh
-
-# Copy Hadoop configuration
-COPY docker/config/core-site.xml ${HADOOP_HOME}/etc/hadoop/core-site.xml
-COPY docker/config/hdfs-site.xml ${HADOOP_HOME}/etc/hadoop/hdfs-site.xml
-COPY docker/config/yarn-site.xml ${HADOOP_HOME}/etc/hadoop/yarn-site.xml
-COPY docker/config/mapred-site.xml ${HADOOP_HOME}/etc/hadoop/mapred-site.xml
-
 # Install miniconda and Python dependencies
 ARG TARGETARCH
 ENV CONDA_DIR=/opt/miniconda
